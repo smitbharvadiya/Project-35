@@ -1,52 +1,125 @@
-var dog,dogImg,dogImg1;
-var database;
-var foodS,foodStock;
+var dog, happyDog, database, foodS, foodStock
+var dogImg, dogHappyImg;
+var milk, milkImg;
 
-function preload(){
-   dogImg=loadImage("Images/Dog.png");
-   dogImg1=loadImage("Images/happy dog.png");
-  }
+
+function preload()
+{
+  dogImg = loadImage("Dog.png");
+  dogHappyImg = loadImage("happydog.png");
+  milkImg = loadImage("milk.png");
+  
+
+}
 
 function setup() {
-  database=firebase.database();
-  createCanvas(500,500);
-
-  dog=createSprite(250,300,150,150);
+  database = firebase.database();
+  createCanvas(500, 500);
+  
+  dog = createSprite(250,250,10,10);
   dog.addImage(dogImg);
-  dog.scale=0.15;
+  dog.scale = 0.15;
 
-  foodStock=database.ref('Food');
+  emo = createSprite(200,200,1,1);
+  
+  foodStock = database.ref('food');
   foodStock.on("value",readStock);
-  textSize(20); 
+  foodStock.set(50);
+  
+  milk = createSprite(140,435,10,10);
+  milk.addImage(milkImg);
+  milk.scale = 0.025;
+
+  milk1 = createSprite(210,280,10,10);
+  milk1.addImage(milkImg);
+  milk1.scale = 0.025;
+  milk1.visible = false;
+
+
+  for (var i = 5; i < 500; i=i+10) 
+{
+
+var dot = createSprite(i, 5, 3, 3);
+dot.shapeColor = "yellow";
+
+}
+for (var i = 5; i < 500; i=i+10) 
+{
+
+var dot1 = createSprite(i, 495, 3, 3);
+dot1.shapeColor = "yellow";
+
+}
+for (var i = 5; i < 500; i=i+10) 
+{
+
+var dot1 = createSprite(495,i, 3, 3);
+dot1.shapeColor = "yellow";
+
+}
+for (var i = 5; i < 500; i=i+10) 
+{
+
+var dot1 = createSprite(5,i, 3, 3);
+dot1.shapeColor = "yellow";
+
+}
 }
 
-function draw() {
-  background(46,139,87);
- 
+
+function draw() {  
+  background(46,139,87)
+
+  if(foodS !== 0){
   if(keyWentDown(UP_ARROW)){
     writeStock(foodS);
-    dog.addImage(dogImg1);
+    dog.addImage(dogHappyImg);
+    milk1.visible = true;
+
+   
   }
 
-  drawSprites();
-  fill(255,255,254);
-  stroke("black");
-  text("Food remaining : "+foodS,170,200);
-  textSize(13);
-  text("Note: Press UP_ARROW Key To Feed Drago Milk!",130,10,300,20);
+  if(keyWentUp(UP_ARROW)){
+    writeStock(foodS);
+    dog.addImage(dogImg);
+    milk1.visible = false;
+  }
 }
 
-function readStock(data){
-  foodS=data.val();
+if(foodS == 0){
+  
+  dog.addImage(dogImg);
+  foodS = 50;
+
+}
+
+
+
+  drawSprites();
+  textSize(17);
+  fill("yellow");
+  text("I am your Puppy 🐶GENO..😍 I am Hungry ",100,150);
+  fill("white");
+  text("Long Press up arrow key to feed your pet Dog GENO",50,50);
+  fill("cyan");
+  text("Milk Bottles Remaining  "+foodS,170,440);
+}
+
+function readStock(data)
+{
+  foodS = data.val();
 }
 
 function writeStock(x){
+
   if(x<=0){
-    x=0;
+    x = 0;
   }else{
-    x=x-1;
-  } 
+    x=x-1
+  }
+
   database.ref('/').update({
-    Food:x
+    food:x
   })
 }
+
